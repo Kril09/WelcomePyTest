@@ -37,7 +37,8 @@ class TestVideoPage:
         video_page.check_text_edit_comment()
 
     def test_add_post_comment_video_auth_user(self, driver, url, email, code):
-        """Проверка добавления комментария-ответа авторизованным пользователем"""
+        """Проверка добавления комментария
+        ответа авторизованным пользователем"""
         video_page = VideoPage(driver, url, email, code)
         video_page.open()
         base_page = BasePage(driver, url, email, code)
