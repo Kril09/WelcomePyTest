@@ -2,11 +2,13 @@ import pytest
 
 from selenium import webdriver
 
+from Libraries.video_page.constants import BASE_URL
+from Libraries.video_page.video_page import VideoPage
+
 
 @pytest.fixture
 def driver():
     driver = webdriver.Chrome()
-    driver = driver
     driver.maximize_window()
     yield driver
     driver.quit()
@@ -14,14 +16,10 @@ def driver():
 
 @pytest.fixture
 def url():  # базовый URL
-    return "https://platform.rupor-test.rutube.dev"
+    return BASE_URL
 
 
-@pytest.fixture
-def email():  # email для регистрации
-    return "test_testuser1@yandex.ru"
-
-
-@pytest.fixture
-def code():  # проверочный код для регистрации
-    return "8080"
+@pytest.fixture(scope="function")
+def video_page(driver, url):
+    """Создание экземпляра VideoPage для тестов."""
+    return VideoPage(driver=driver, url=url)

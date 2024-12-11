@@ -1,5 +1,7 @@
 from selenium.webdriver.common.by import By
 
+from .constants import TEXT_COMMENT_EDIT, TEXT_COMMENT_ANSWER, TEXT_COMMENT_ONE
+
 
 class MainPageLocators:
 
@@ -45,17 +47,16 @@ class MainPageLocators:
     # кнопка Далее
     NEXT_BUTTON = (By.XPATH, "//span[text() = 'Далее']")
     # ввод кода
-    INPUT_CODE0 = (By.XPATH, "//input[@data-testid='otp-input-0']")
-    # Тексты комментариев
-    TEXT_COMMENT_ONE = '123'  # текст первого комментария
-    TEXT_COMMENT_EDIT = 'Трулала'  # текст для редактирования комментария
-    TEXT_COMMENT_ANSWER = '123-123-465-789'  # текст комментария ответа
+    INPUT_CODE = (By.XPATH, "//input[@data-testid='otp-input-0']")
     # Проверки
     CHECK_TEXT_EDIT_COMMENT = \
         (By.XPATH, "//span[text()='{}']".format(TEXT_COMMENT_EDIT))
+    CHECK_TEXT_COMMENT_ANSWER = (By.XPATH, "//span[text()='{}']".format(
+        TEXT_COMMENT_ANSWER))
     # всплывашка
     POP_UP_AUTH = (
         By.XPATH, "//div[text()="
                   "'Войдите в свой аккаунт, чтобы оставить комментарий']")
+    # проверка отображения на странице комментария
     VISIBLE_TEXT_COMMENT = \
         (By.XPATH, "//span[text()='{}']".format(TEXT_COMMENT_ONE))

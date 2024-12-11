@@ -1,31 +1,30 @@
 from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
 from Libraries.base_page import BasePage
-from Libraries.locators import MainPageLocators
+from .constants import TEXT_COMMENT_ONE, TEXT_COMMENT_ANSWER, TEXT_COMMENT_EDIT
+from .locators import MainPageLocators
 
 
 class VideoPage(BasePage, MainPageLocators):
-    locators = MainPageLocators()
 
     # клик по первому видео на главной странице
     def find_first_element_videos(self):
-        elements = self.element_is_visible_all(self.FEED_VIDEO)
-        elements[0].click()
+        self.elements(self.FEED_VIDEO)[0].click()
 
     # клик по комментарию под видео
     def click_comment_in_id_video(self):
         """Клик в область комментария для фокуса и появления кебаб меню"""
-        self.element_is_visible(self.SELECTION_AREA_COMMENT).click()
+        self.element(self.SELECTION_AREA_COMMENT).click()
         """Клик на кебаб меню"""
-        self.element_is_visible(self.SELECTION_COMMENT).click()
+        self.element_is_visible(self.SELECTION_COMMENT)
+        self.element(self.SELECTION_COMMENT).click()
 
     # фокус на области комментария для появления кебаб меню
     def click_edit_comment_in_id_video(self):
-        self.element_is_visible(self.BUTTON_EDIT).click()
+        self.element(self.BUTTON_EDIT).click()
 
     # Очистка поля инпута комментария
     def clear_comment_input(self):
@@ -36,13 +35,14 @@ class VideoPage(BasePage, MainPageLocators):
 
     # ввод нового комментария
     def fill_comment_input(self):
-        (self.element_is_visible(self.EDIT_COMMENT)
-         .send_keys(self.TEXT_COMMENT_EDIT))
+        (self.element(self.EDIT_COMMENT)
+         .send_keys(TEXT_COMMENT_EDIT))
+        self.element_is_visible(self.SAVE_EDIT_COMMENT)
         self.element_is_clickable(self.SAVE_EDIT_COMMENT).click()
 
     # клик добавления комментария
     def click_add_comment(self):
-        self.element_is_visible(self.ADD_COMMENT).click()
+        self.element(self.ADD_COMMENT).click()
 
     # отправка комментария
     def send_comment(self):
@@ -50,15 +50,15 @@ class VideoPage(BasePage, MainPageLocators):
 
     # Добавление комментария
     def add_comment(self):
-        (self.element_is_visible(self.ADD_COMMENT)
-         .send_keys(self.TEXT_COMMENT_ONE))
+        (self.element(self.ADD_COMMENT)
+         .send_keys(TEXT_COMMENT_ONE))
 
     # добавление комментария ответа
     def add_answer(self):
-        self.element_is_visible(self.ADD_ANSWER).click()
-        (self.element_is_visible(self.EDIT_COMMENT, 10)
-         .send_keys(self.TEXT_COMMENT_ANSWER))
-        self.element_is_visible(self.SAVE_EDIT_POST_COMMENT).click()
+        self.element(self.ADD_ANSWER).click()
+        (self.element(self.EDIT_COMMENT, 10)
+         .send_keys(TEXT_COMMENT_ANSWER))
+        self.element(self.SAVE_EDIT_POST_COMMENT).click()
 
     # раскрытие формы ответа
     def answer_view(self):
@@ -66,18 +66,18 @@ class VideoPage(BasePage, MainPageLocators):
 
     # удаление комментария
     def delete_comment(self):
-        self.element_is_visible(self.DELETE_COMMENT).click()
-        self.element_is_visible(self.DELETE).click()
+        self.element(self.DELETE_COMMENT).click()
+        self.element(self.DELETE).click()
 
     # клик по доп меню комментария под видео
     def click_comment(self):
-        self.element_is_visible(self.SELECTION_AREA_COMMENT).click()
-        self.element_is_visible(self.SELECTION_COMMENT).click()
+        self.element(self.SELECTION_AREA_COMMENT).click()
+        self.element(self.SELECTION_COMMENT).click()
 
     # проверка отображения всплывающего окна
     def check_pop_up_auth(self):
         element = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located(MainPageLocators.POP_UP_AUTH)
+            EC.presence_of_element_located(self.POP_UP_AUTH)
         )
         return element.is_displayed()
 
@@ -85,7 +85,7 @@ class VideoPage(BasePage, MainPageLocators):
     def check_text_comment(self):
         element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located(
-                MainPageLocators.VISIBLE_TEXT_COMMENT
+                self.VISIBLE_TEXT_COMMENT
             )
         )
         return element.is_displayed()
@@ -94,7 +94,7 @@ class VideoPage(BasePage, MainPageLocators):
     def check_text_edit_comment(self):
         element = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located(
-                MainPageLocators.CHECK_TEXT_EDIT_COMMENT
+                self.CHECK_TEXT_EDIT_COMMENT
             )
         )
         return element.is_displayed()
@@ -104,8 +104,8 @@ class VideoPage(BasePage, MainPageLocators):
         element = (
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//span[text()='{}']".format(
-                        MainPageLocators.TEXT_COMMENT_ANSWER)))
+                    self.CHECK_TEXT_COMMENT_ANSWER
+                )
             )
         )
         return element.is_displayed()
@@ -115,8 +115,13 @@ class VideoPage(BasePage, MainPageLocators):
         try:
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//span[text()='{}']"
-                     .format(MainPageLocators.TEXT_COMMENT_EDIT)))
+                    self.CHECK_TEXT_EDIT_COMMENT)
             )
         except TimeoutException:
             assert False, 'Комментарий не удален'
+
+    def auth(self, email, code):  # метод авторизации
+        self.element(self.BUTTON_AUTH).click()
+        self.element_is_clickable(self.INPUT_EMAIL, 10).send_keys(email)
+        self.element(self.NEXT_BUTTON).click()
+        self.element(self.INPUT_CODE).send_keys(code)
