@@ -4,7 +4,7 @@ from Libraries.video_page.constants import EMAIL, CODE
 class TestVideoPage:
 
     def test_add_comment_video_non_auth_user(self, video_page):
-        """Проверка добавления комментария не авторизованным пользователем"""
+        """Проверка добавления комментария неавторизованным пользователем"""
         video_page.open()
         video_page.find_first_element_videos()
         video_page.click_add_comment()
